@@ -8,20 +8,10 @@ import java.util.List;
 
 public class ListOutputWriter extends Writer {
 
-    ArrayList<String> stringList;
+    private List<String> stringList;
 
     public ListOutputWriter(ArrayList<String> stringList) {
         this.stringList = stringList;
-    }
-
-    public void write(String string) {
-
-        char[] stringToStream = string.toCharArray();
-        try {
-            write(stringToStream, 0, stringToStream.length);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public List<String> getStringList() {
@@ -30,9 +20,8 @@ public class ListOutputWriter extends Writer {
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
-        String string = new String(cbuf);
-        String[] messages = string.split(" ");
-        stringList.addAll(Arrays.asList(messages));
+        char[] chars = Arrays.copyOf(cbuf, len);
+        stringList.addAll(Arrays.asList(new String(chars).split(" ")));
     }
 
     @Override
