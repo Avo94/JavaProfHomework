@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class FlightApp {
     public static void main(String[] args) {
 
+        String exit;
         List<Trip> routes = List.of(
                 new Trip("Warsaw", "Madrid", 4, 220.57, "15.05.2023", "19.05.2023"),
                 new Trip("Berlin", "Athens", 6, 291.12, "18.06.2023", "27.06.2023"),
@@ -19,46 +20,50 @@ public class FlightApp {
                 new Trip("Paris", "London", 2, 152.99, "15.05.2023", "19.05.2023"),
                 new Trip("Lisbon", "Belgrade", 12, 191, "20.06.2023", "28.06.2023"),
                 new Trip("Dublin", "Bucharest", 7, 748.4, "01.07.2023", "22.07.2023"),
-                new Trip("Riga", "Madrid", 6, 267.5, "19.05.2023", "31.05.2023")
-        );
+                new Trip("Riga", "Madrid", 6, 267.5, "19.05.2023", "31.05.2023"));
 
         // A
-        System.out.println("(A) Список всех поездок");
-        routes.stream().peek(System.out::println).collect(Collectors.toList());
+        System.out.println("(A) Список всех поездок:");
+        routes.stream().forEach(System.out::println);
 
         // B
-        System.out.println("\n(B) Список поездок, отсортированных по возрастанию цены");
-        routes.stream().sorted(Comparator.comparingDouble(Trip::getPrice)).peek(System.out::println).collect(Collectors.toList());
+        System.out.println("\n(B) Список поездок, отсортированных по возрастанию цены:");
+        routes.stream().sorted(Comparator.comparingDouble(Trip::getPrice)).forEach(System.out::println);
 
         // C
-        System.out.println("\n(C) Список поездок, отсортированных по убыванию цены");
-        routes.stream().sorted(Comparator.comparingDouble(Trip::getPrice).reversed()).peek(System.out::println).collect(Collectors.toList());
+        System.out.println("\n(C) Список поездок, отсортированных по убыванию цены:");
+        routes.stream().sorted(Comparator.comparingDouble(Trip::getPrice).reversed()).forEach(System.out::println);
 
-        // D
-        Scanner decimal = new Scanner(System.in);
-        System.out.println("\nВведите минимальное значение диапазона цен, в котором хотите найти билеты:");
-        double minPrice = decimal.nextDouble();
-        System.out.println("Введите максимальное значение диапазона цен, в котором хотите найти билеты:");
-        double maxPrice = decimal.nextDouble();
-        System.out.println("\n(D) Список поездок в указанном ценовом диапазоне");
-        routes.stream().filter(x -> x.getPrice() >= minPrice && x.getPrice() <= maxPrice).peek(System.out::println).collect(Collectors.toList());
+        do {
+            // D
+            Scanner decimal = new Scanner(System.in);
+            System.out.println("\nВведите минимальное значение диапазона цен, в котором хотите найти билеты:");
+            double minPrice = decimal.nextDouble();
+            System.out.println("Введите максимальное значение диапазона цен, в котором хотите найти билеты:");
+            double maxPrice = decimal.nextDouble();
+            System.out.println("\n(D) Список поездок в указанном ценовом диапазоне:");
+            routes.stream().filter(x -> x.getPrice() >= minPrice && x.getPrice() <= maxPrice).forEach(System.out::println);
 
-        // E
-        System.out.println("\nВыберете город начала поездки из списка доступных:");
-        System.out.println(routes.stream().map(x -> x.getSource()).collect(Collectors.toSet()));
-        String source = new Scanner(System.in).nextLine();
-        System.out.println("\n(E) Все доступыне поездки из выбранного города");
-        routes.stream().filter(x -> source.equals(x.getSource())).peek(System.out::println).collect(Collectors.toList());
+            // E
+            System.out.println("\nВыберете город начала поездки из списка доступных:");
+            System.out.println(routes.stream().map(x -> x.getSource()).collect(Collectors.toSet()));
+            String source = new Scanner(System.in).nextLine();
+            System.out.println("\n(E) Все доступыне поездки из выбранного города:");
+            routes.stream().filter(x -> source.equals(x.getSource())).forEach(System.out::println);
 
-        // F
-        System.out.println("\nВведите минимальное значение диапазона цен из города " + source + ":");
-        double sourceMinPrice = decimal.nextDouble();
-        System.out.println("Введите максимальное значение диапазона цен из города " + source + ":");
-        double sourceMaxPrice = decimal.nextDouble();
-        System.out.println("\n(F) Список поездок в указанном ценовом диапазоне из города " + source);
-        routes.stream().filter(x -> source.equals(x.getSource()))
-                .filter(x -> x.getPrice() >= sourceMinPrice && x.getPrice() <= sourceMaxPrice)
-                .peek(System.out::println).collect(Collectors.toList());
+            // F
+            System.out.println("\nВведите минимальное значение диапазона цен из города " + source + ":");
+            double sourceMinPrice = decimal.nextDouble();
+            System.out.println("Введите максимальное значение диапазона цен из города " + source + ":");
+            double sourceMaxPrice = decimal.nextDouble();
+            System.out.println("\n(F) Список поездок в указанном ценовом диапазоне из города " + source + ":");
+            routes.stream().filter(x -> source.equals(x.getSource()))
+                    .filter(x -> x.getPrice() >= sourceMinPrice && x.getPrice() <= sourceMaxPrice)
+                    .forEach(System.out::println);
+
+            System.out.println("\nНажмите Enter, чтобы использвать программу повторно. Чтобы выйти введите exit.");
+            exit = new Scanner(System.in).nextLine();
+        } while (!"exit".equals(exit));
 
         // G
         System.out.println("\n(G) Общее количество доступных поездок - " + routes.stream().count());

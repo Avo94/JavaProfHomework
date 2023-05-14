@@ -2,12 +2,12 @@ package Prof19Homework_25_04_2023;
 
 public class Trip {
 
-    String source;
-    String destination;
-    int hours;
-    double price;
-    String startDate;
-    String returnDate;
+    private final String source;
+    private final String destination;
+    private final int hours;
+    private final double price;
+    private final String startDate;
+    private final String returnDate;
 
     public Trip(String source, String destination, int hours, double price, String startDate, String returnDate) {
         this.source = source;
