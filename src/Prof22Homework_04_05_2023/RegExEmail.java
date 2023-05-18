@@ -14,7 +14,7 @@ public class RegExEmail {
 
     private static boolean isValidEmail(String address) {
 
-        String regex = "(\\w+([\\.-]?\\w+){0,15}@\\w+([\\.-]?\\w+){0,2}\\.\\w{2,10})";
+        String regex = "(\\w{1,34}([\\.-]?\\w{1,34}){1,15}@\\w{1,15}([\\.-]?\\w{1,15}){0,2}\\.\\w{2,10})";
         Pattern pattern = Pattern.compile(regex);
         return pattern.matcher(address).matches();
     }
