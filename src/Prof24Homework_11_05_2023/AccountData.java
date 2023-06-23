@@ -1,17 +1,20 @@
 package Prof24Homework_11_05_2023;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AccountData {
 
-    private Map<String, String> accounts;
+    private final Map<String, String> accounts = new HashMap<>();
 
-    public AccountData() {
-        this.accounts = new HashMap<>();
+    public AccountData(List<Account> accounts) {
+        for (Account account : accounts) {
+            this.accounts.put(account.getIban(), account.getConfirmationNumber());
+        }
     }
 
-    public void setAccounts(Account account) {
-        accounts.put(account.getIban(), account.getConfirmationNumber());
+    public Map<String, String> getAccounts() {
+        return this.accounts;
     }
 }

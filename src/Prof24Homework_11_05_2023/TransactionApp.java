@@ -12,11 +12,10 @@ public class TransactionApp {
         Account accountTwo =
                 new Account("IB24332005214000107893225411110001", "112104", 2450);
         List<Account> accounts = Arrays.asList(accountOne, accountTwo);
-        AccountData accountData = new AccountData();
-        for (var account : accounts) accountData.setAccounts(account);
+        AccountData accountData = new AccountData(accounts);
 
         System.out.println("В системе найдено счетов: " + accounts.size());
-        accounts.stream().map(x -> "****" + x.getIban().substring(x.getIban().length() - 4))
+        accountData.getAccounts().keySet().stream().map(x -> "****" + x.substring(x.length() - 4))
                 .forEach(System.out::println);
 
         int accountPosition = 0;
@@ -27,13 +26,13 @@ public class TransactionApp {
         retry = "yes";
         while ("yes".equals(retry)) {
             System.out.println("Введите порядковый номер счёта для авторизации:");
-            accountPosition = new Scanner(System.in).nextInt();
-            retry = AccountService.wrongChoiceCheck(accountPosition, accounts.size());
+            accountPosition = new Scanner(System.in).nextInt() - 1;
+            retry = AccountService.wrongChoiceCheck(accountPosition, accountData.getAccounts().size());
         }
 
         int counter = 0;
         for (Account account : accounts) {
-            if (counter == accountPosition - 1) senderAccount = account;
+            if (counter == accountPosition) senderAccount = account;
             counter++;
         }
 
@@ -42,9 +41,7 @@ public class TransactionApp {
         do {
             countOfFails = 0;
             do {
-                System.out.println("Введите полный IBAN-номер," +
-                        "выбранного банковского счёта (2 латинские буквы + 32 цифры):");
-                iban = new Scanner(System.in).nextLine();
+                iban = inputNUmber();
                 retry = AccountService.ibanCheck(senderAccount, iban);
             } while ("yes".equals(retry));
             endOfProgramCheck(retry);
@@ -52,7 +49,7 @@ public class TransactionApp {
             do {
                 if (countOfFails > 2) break;
                 System.out.println("Введите код подтверждения (6 цифр) для счёта " + iban + ":");
-                String confirmNumber = new Scanner(System.in).nextLine();
+                String confirmNumber = inputNumber(iban);
                 retry = AccountService.confirmationNumberCheck(senderAccount, confirmNumber);
                 countOfFails++;
             } while ("yes".equals(retry));
@@ -68,20 +65,27 @@ public class TransactionApp {
         retry = "yes";
         while ("yes".equals(retry)) {
             System.out.println("Введите порядковый номер счёта, с которого хотите перевести деньги на другой счёт:");
-            accountPosition = new Scanner(System.in).nextInt();
+            accountPosition = new Scanner(System.in).nextInt() - 1;
             retry = AccountService.wrongChoiceCheck(accountPosition, accounts.size());
         }
 
+        int recipientAccountPosition;
+        do {
+            System.out.println("Выберете номер аккаунта, а который хотите перевести деньги");
+            recipientAccountPosition = new Scanner(System.in).nextInt() - 1;
+            if (recipientAccountPosition == accountPosition) {
+                System.out.println("Вы должны выбрать счёт отличный от текущего");
+            }
+        } while (recipientAccountPosition == accountPosition);
+
         counter = 0;
         for (Account account : accounts) {
-            if (counter < 1) {
-                for (Account lastAccount : accounts) recipientAccount = lastAccount;
-            }
-            if (counter == accountPosition - 1) {
+            if (counter == accountPosition) {
                 senderAccount = account;
-                break;
             }
-            recipientAccount = account;
+            if (counter == recipientAccountPosition) {
+                recipientAccount = account;
+            }
             counter++;
         }
 
@@ -102,6 +106,17 @@ public class TransactionApp {
                             substring(x.getIban().length() - 4) + " - " + x.getBalance() + "$")
                     .forEach(System.out::println);
         }
+    }
+
+    public static String inputNUmber() {
+        System.out.println("Введите полный IBAN-номер," +
+                "выбранного банковского счёта (2 латинские буквы + 32 цифры):");
+        return new Scanner(System.in).nextLine();
+    }
+
+    public static String inputNumber(String iban) {
+        System.out.println("Введите код подтверждения (6 цифр) для счёта " + iban + ":");
+        return new Scanner(System.in).nextLine();
     }
 
     public static void endOfProgramCheck(String retry) {
